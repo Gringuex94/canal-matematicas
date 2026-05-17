@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matemáticas con Javier</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --navy: #1e3a5f;
+      --navy2: #16304f;
+      --gold: #f5a623;
+      --gold-light: #fff8ed;
+      --bg: #eef2ff;
+      --surface: #ffffff;
+      --surface2: #f7f9fc;
+      --border: #e4e9f2;
+      --text: #1a1d23;
+      --text2: #6b7280;
+      --red-yt: #ff0000;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --grad: linear-gradient(135deg, #1e3a5f 0%, #2d5b8e 100%);
+      --grad-gold: linear-gradient(135deg, #f5a623, #f7c56a);
+      --shadow: 0 4px 24px rgba(30,58,95,0.10);
+      --shadow-hover: 0 12px 36px rgba(30,58,95,0.18);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #eef2ff;
+      background-image: 
+        linear-gradient(160deg, #dde8ff 0%, #eef2ff 40%, #f5f0ff 70%, #fff8ed 100%);
+      background-attachment: fixed;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      background: var(--grad);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 4px 20px rgba(30,58,95,0.25);
+      backdrop-filter: blur(8px);
+      overflow: visible;
+    }
+    .navbar-brand { display: flex; align-items: center; gap: 12px; }
+    .logo-icon {
+      width: 40px; height: 40px;
+      background: var(--grad-gold);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 800; color: #1a2744;
+      box-shadow: 0 2px 8px rgba(245,166,35,0.4);
+    }
+    .navbar-title { color: #fff; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+    .navbar-subtitle { color: rgba(255,255,255,0.55); font-size: 11px; margin-top: 1px; }
+    .nav-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-nav {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: #fff; padding: 7px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-nav:hover { background: rgba(255,255,255,0.22); transform: translateY(-1px); }
+    .btn-nav.active { background: var(--grad-gold); color: #1a2744; border-color: transparent; font-weight: 700; box-shadow: 0 2px 10px rgba(245,166,35,0.4); }
+
+    /* HERO BANNER */
+    .hero {
+      background: var(--grad);
+      color: #fff;
+      padding: 2.5rem 1.5rem 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 120%, rgba(245,166,35,0.18) 0%, transparent 70%);
+    }
+    .hero h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; position: relative; }
+    .hero p { font-size: 14px; color: rgba(255,255,255,0.7); position: relative; }
+    .hero-math {
+      position: absolute; opacity: 0.06; font-size: 80px; font-weight: 800;
+      top: -10px; right: 40px; transform: rotate(-15deg); pointer-events: none;
+    }
+
+    /* MAIN */
+    .main { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 2rem; }
+
+    /* LEVEL TABS */
+    .level-tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .level-tab {
+      padding: 8px 22px; border-radius: 999px; font-size: 13px; font-weight: 500;
+      cursor: pointer; border: 1.5px solid var(--border);
+      background: var(--surface); color: var(--text2);
+      transition: all 0.2s; font-family: 'Inter', sans-serif;
+    }
+    .level-tab.active { background: var(--grad); color: #fff; border-color: transparent; box-shadow: 0 2px 10px rgba(30,58,95,0.2); }
+    .level-tab:hover:not(.active) { border-color: var(--navy); color: var(--navy); transform: translateY(-1px); }
+
+    /* VIDEO GRID */
+    .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 22px; }
+    .video-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: var(--shadow);
+    }
+    .video-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+    .video-thumb {
+      width: 100%; aspect-ratio: 16/9;
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden; cursor: pointer;
+    }
+    .thumb-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+    .video-thumb:hover .thumb-img { transform: scale(1.04); }
+    .play-btn {
+      position: absolute; width: 54px; height: 54px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    .video-thumb:hover .play-btn { transform: scale(1.12); box-shadow: 0 6px 24px rgba(0,0,0,0.3); }
+    .play-triangle { width: 0; height: 0; border-top: 11px solid transparent; border-bottom: 11px solid transparent; border-left: 18px solid var(--navy); margin-left: 4px; }
+    .badge-wrap { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; }
+    .level-badge { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 999px; letter-spacing: 0.03em; backdrop-filter: blur(4px); }
+    .badge-sec { background: rgba(245,166,35,0.92); color: #1a2744; }
+    .badge-uni { background: rgba(30,58,95,0.88); color: #fff; }
+    .video-info { padding: 14px 16px 16px; }
+    .video-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 5px; line-height: 1.45; }
+    .video-meta { font-size: 12px; color: var(--text2); margin-bottom: 12px; }
+    .video-actions { display: flex; gap: 8px; }
+    .btn-like, .btn-sub {
+      flex: 1; font-size: 12px; padding: 8px 4px;
+      border-radius: var(--radius-sm); cursor: pointer;
+      border: 1.5px solid var(--border); transition: all 0.18s;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      font-weight: 600; font-family: 'Inter', sans-serif;
+    }
+    .btn-like { background: var(--surface2); color: var(--text2); }
+    .btn-like:hover { background: var(--gold-light); color: #854F0B; border-color: var(--gold); transform: translateY(-1px); }
+    .btn-like.liked { background: var(--gold-light); color: #854F0B; border-color: var(--gold); }
+    .btn-sub { background: linear-gradient(135deg,#ff0000,#cc0000); color: #fff; border-color: transparent; box-shadow: 0 2px 8px rgba(255,0,0,0.25); }
+    .btn-sub:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(255,0,0,0.35); }
+
+    /* LOADING / EMPTY */
+    .loading-state, .empty-state { text-align: center; padding: 3rem; color: var(--text2); font-size: 14px; }
+    .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--navy); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 1rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ADMIN PANEL */
+    .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .admin-title { font-size: 18px; font-weight: 700; color: var(--text); }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 2rem; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.1rem; text-align: center;
+      box-shadow: var(--shadow); transition: transform 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-icon { font-size: 22px; margin-bottom: 8px; }
+    .stat-value { font-size: 26px; font-weight: 800; color: var(--navy); }
+    .stat-label { font-size: 11px; color: var(--text2); margin-top: 3px; }
+    .admin-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; box-shadow: var(--shadow); }
+    .section-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+    .ranking-list { display: flex; flex-direction: column; gap: 10px; }
+    .ranking-item { display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: var(--surface2); border-radius: var(--radius-sm); transition: transform 0.15s; }
+    .ranking-item:hover { transform: translateX(3px); }
+    .rank-num { font-size: 20px; font-weight: 800; color: var(--gold); min-width: 30px; }
+    .rank-info { flex: 1; }
+    .rank-title { font-size: 13px; font-weight: 600; color: var(--text); }
+    .rank-views { font-size: 11px; color: var(--text2); margin-top: 2px; }
+    .rank-bar-wrap { width: 90px; height: 6px; background: var(--border); border-radius: 3px; }
+    .rank-bar { height: 6px; background: var(--grad); border-radius: 3px; transition: width 0.6s ease; }
+    .add-video-form { display: grid; gap: 12px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-label { font-size: 12px; color: var(--text2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .form-input, .form-select {
+      padding: 9px 12px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border); background: var(--surface2);
+      color: var(--text); font-size: 13px; width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .form-input:focus, .form-select:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(30,58,95,0.08); }
+    .btn-primary {
+      background: var(--grad); color: #fff; border: none;
+      padding: 10px 24px; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; font-family: 'Inter', sans-serif;
+      box-shadow: 0 2px 10px rgba(30,58,95,0.25);
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(30,58,95,0.3); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-danger { background: transparent; border: 1px solid #fca5a5; color: #dc2626; padding: 5px 12px; border-radius: var(--radius-sm); font-size: 12px; cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
+    .btn-danger:hover { background: #fee2e2; }
+    .video-manage-list { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; }
+    .video-manage-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: var(--surface2); border-radius: var(--radius-sm); }
+    .manage-title { flex: 1; font-size: 13px; color: var(--text); font-weight: 500; }
+    .manage-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: 6px; }
+    .manage-views { font-size: 12px; color: var(--text2); min-width: 70px; text-align: right; }
+
+    /* MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15,25,50,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 500; }
+    .modal { background: var(--surface); border-radius: var(--radius); padding: 2rem; width: 340px; box-shadow: 0 24px 80px rgba(0,0,0,0.25); }
+    .modal-title { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+    .modal-subtitle { font-size: 13px; color: var(--text2); margin-bottom: 1.25rem; }
+    .modal-input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; color: var(--text); background: var(--surface2); margin-bottom: 12px; font-family: 'Inter', sans-serif; transition: border-color 0.2s; }
+    .modal-input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(30,58,95,0.08); }
+    .modal-actions { display: flex; gap: 8px; }
+    .modal-error { font-size: 12px; color: #dc2626; margin-bottom: 10px; display: none; font-weight: 500; }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--grad); color: #fff; padding: 13px 22px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; opacity: 0; transform: translateY(10px); transition: all 0.3s cubic-bezier(.34,1.56,.64,1); z-index: 999; pointer-events: none; box-shadow: 0 6px 20px rgba(30,58,95,0.3); }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* PROPINA */
+    .tip-banner {
+      background: linear-gradient(135deg, #fff8ed, #fff3d6);
+      border: 1.5px solid rgba(245,166,35,0.35);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; margin-bottom: 1.5rem;
+      box-shadow: 0 2px 12px rgba(245,166,35,0.1);
+      flex-wrap: wrap;
+    }
+    .tip-text { font-size: 14px; color: #7a4f00; font-weight: 500; }
+    .tip-text strong { font-weight: 700; }
+    .btn-tip {
+      background: var(--grad-gold);
+      color: #1a2744; border: none;
+      padding: 9px 22px; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; font-family: 'Inter', sans-serif;
+      box-shadow: 0 2px 10px rgba(245,166,35,0.4);
+      white-space: nowrap;
+    }
+    .btn-tip:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(245,166,35,0.5); }
+
+    /* LANG TOGGLE */
+    .btn-lang {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff; padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s; font-family: 'Inter', sans-serif;
+    }
+    .btn-lang:hover { background: rgba(255,255,255,0.25); }
+    /* TOOLTIP CONSULTAS */
+    .btn-consultas-wrap {
+      position: relative;
+    }
+    .btn-consultas-wrap .tooltip {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: var(--grad-gold);
+      color: #1a2744;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-4px);
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(245,166,35,0.35);
+      z-index: 200;
+    }
+    .btn-consultas-wrap .tooltip::before {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      right: 16px;
+      border: 6px solid transparent;
+      border-bottom-color: #f5a623;
+    }
+    .btn-consultas-wrap:hover .tooltip {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .video-card .video-thumb { background: linear-gradient(90deg, #dde4f0 25%, #eef2ff 50%, #dde4f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    .video-card .video-thumb img { animation: none; background: transparent; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        .hidden { display: none !important; }
+    #view-public.hidden { display: none !important; }
+    #view-admin.hidden { display: none !important; }
+    #view-consultas.hidden { display: none !important; }
+
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+      .navbar { padding: 0 1rem; }
+      .main { padding: 0 1rem 2rem; }
+      .hero { padding: 2rem 1rem 1.5rem; }
+      .hero h1 { font-size: 22px; }
+      .tip-banner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- SPLASH SCREEN -->
+<div id="splash" style="position:fixed;inset:0;z-index:9999;background:#1e3a5f;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Inter',sans-serif;overflow:hidden;">
+  <div id="formulas-container" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;"></div>
+  <div id="quotes-container" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;"></div>
+  <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="60,80 120,80 90,30" fill="none" stroke="rgba(245,166,35,0.15)" stroke-width="1.5"/>
+    <circle cx="700" cy="100" r="50" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+    <circle cx="700" cy="100" r="30" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+    <polygon points="720,480 780,440 780,520" fill="none" stroke="rgba(245,166,35,0.12)" stroke-width="1.5"/>
+    <rect x="30" y="380" width="60" height="60" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" transform="rotate(15,60,410)"/>
+    <circle cx="120" cy="500" r="40" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" stroke-dasharray="6,4"/>
+    <ellipse cx="650" cy="350" rx="80" ry="40" fill="none" stroke="rgba(245,166,35,0.08)" stroke-width="1" transform="rotate(-20,650,350)"/>
+    <polygon points="200,540 240,500 280,540 260,580 220,580" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+  </svg>
+  <div style="position:relative;z-index:10;text-align:center;display:flex;flex-direction:column;align-items:center;gap:24px;">
+    <div style="width:80px;height:80px;background:linear-gradient(135deg,#f5a623,#f7c56a);border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900;color:#1a2744;animation:pulse 2s ease-in-out infinite;box-shadow:0 0 40px rgba(245,166,35,0.4);">∑</div>
+    <div style="color:#fff;font-size:32px;font-weight:800;letter-spacing:-0.02em;line-height:1.2;text-shadow:0 2px 20px rgba(0,0,0,0.3);">Matemáticas<br>con <span style="color:#f5a623;">Javier</span></div>
+    <div style="width:60px;height:2px;background:linear-gradient(90deg,transparent,#f5a623,transparent);border-radius:2px;"></div>
+    <div style="color:rgba(255,255,255,0.55);font-size:14px;letter-spacing:0.08em;text-transform:uppercase;">Secundario &amp; Universitario</div>
+    <button onclick="enterSite()" style="margin-top:8px;background:linear-gradient(135deg,#f5a623,#f7c56a);color:#1a2744;border:none;padding:16px 48px;border-radius:999px;font-size:16px;font-weight:800;cursor:pointer;letter-spacing:0.04em;font-family:'Inter',sans-serif;box-shadow:0 4px 24px rgba(245,166,35,0.5);transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px) scale(1.04)';this.style.boxShadow='0 8px 36px rgba(245,166,35,0.7)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 24px rgba(245,166,35,0.5)'">✦ Entrar al canal</button>
+  </div>
+</div>
+
+<style>
+  @keyframes pulse { 0%,100%{box-shadow:0 0 30px rgba(245,166,35,0.3);transform:scale(1)}50%{box-shadow:0 0 60px rgba(245,166,35,0.6);transform:scale(1.04)} }
+  @keyframes floatUp { 0%{transform:translateY(0) rotate(var(--r));opacity:0}10%{opacity:1}90%{opacity:0.8}100%{transform:translateY(-110vh) rotate(var(--r));opacity:0} }
+  @keyframes fadeInOut { 0%,100%{opacity:0}30%,70%{opacity:1} }
+  @keyframes shatter { 0%{opacity:1;transform:scale(1);filter:brightness(1)}30%{transform:scale(1.04);filter:brightness(1.5)}60%{transform:scale(0.98) skew(2deg,1deg);opacity:0.7;filter:brightness(2)}100%{transform:scale(1.15) skew(-3deg,-2deg);opacity:0;filter:brightness(3)} }
+  .formula-item{position:absolute;color:rgba(245,166,35,0.22);font-weight:600;white-space:nowrap;animation:floatUp linear infinite;font-family:'Georgia',serif;}
+  .quote-item{position:absolute;color:rgba(255,255,255,0.07);font-size:12px;font-style:italic;max-width:220px;line-height:1.5;animation:fadeInOut ease-in-out infinite;}
+</style>
+
+<script>
+  const formulasList = ['E = mc²','a² + b² = c²','∫₀^∞ e⁻ˣ dx = 1','eⁱᵖ + 1 = 0','∑ n² = n(n+1)(2n+1)/6','sen²x + cos²x = 1','det(A) = ad-bc','√2 ≈ 1.41421','log(ab) = log a + log b','lim x→∞ (1+1/x)ˣ = e','d/dx[xⁿ] = nxⁿ⁻¹','σ² = Σ(xᵢ-μ)²/N','i² = -1','xₙ₊₁ = xₙ - f(xₙ)/f\'(xₙ)','Ax = λx'];
+  const quotesList = ['"Las matemáticas son la reina de las ciencias." — Gauss','"La lógica te llevará de A a B, la imaginación a cualquier parte." — Einstein','"No me preguntes si algo es útil; pregúntame si es bello." — Poincaré','"En matemáticas no entiendes las cosas, simplemente te acostumbras." — Von Neumann','"El universo está escrito en lenguaje matemático." — Galileo'];
+
+  const fc = document.getElementById('formulas-container');
+  const qc = document.getElementById('quotes-container');
+
+  formulasList.forEach((f, i) => {
+    const el = document.createElement('div');
+    el.className = 'formula-item';
+    el.textContent = f;
+    const left = 3 + (i / formulasList.length) * 90;
+    const rot = (Math.random() - 0.5) * 30;
+    const dur = 14 + Math.random() * 10;
+    el.style.cssText += `left:${left}%;bottom:-40px;--r:${rot}deg;animation-duration:${dur}s;animation-delay:${-(i*3.1)}s;font-size:${13+Math.random()*6}px`;
+    fc.appendChild(el);
+  });
+
+  quotesList.forEach((q, i) => {
+    const el = document.createElement('div');
+    el.className = 'quote-item';
+    el.textContent = q;
+    const positions = [{top:'10%',left:'3%'},{top:'15%',right:'3%'},{top:'70%',left:'3%'},{top:'75%',right:'3%'},{top:'42%',left:'2%'}];
+    Object.assign(el.style, positions[i]);
+    el.style.animationDuration = (6 + i * 2) + 's';
+    el.style.animationDelay = (i * 1.5) + 's';
+    qc.appendChild(el);
+  });
+
+  function enterSite() {
+    const splash = document.getElementById('splash');
+    splash.style.animation = 'shatter 0.9s cubic-bezier(.4,0,.2,1) forwards';
+    setTimeout(() => { splash.style.display = 'none'; }, 900);
+  }
+</script>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="logo-icon">MJ</div>
+    <div>
+      <div class="navbar-title">Matemáticas con Javier</div>
+      <div class="navbar-subtitle">Secundario &amp; Universitario</div>
+    </div>
+  </div>
+  <div class="nav-actions">
+    <div class="btn-consultas-wrap">
+  <button class="btn-nav" onclick="showView('consultas')" data-es="Consultas" data-en="Questions">📩 Consultas</button>
+  <div class="tooltip">📎 ¡Adjuntá aquí el ejercicio que no podés resolver!</div>
+</div>
+    <button class="btn-lang" onclick="toggleLang()">🌐 EN</button>
+    <button class="btn-nav active" onclick="showView('public')" data-es="Ver canal" data-en="Watch channel">Ver canal</button>
+    <button class="btn-nav" onclick="openAdminLogin()" id="btn-admin" style="display:none;">Admin</button>
+  </div>
+</nav>
+
+<!-- VISTA PÚBLICA -->
+<div id="view-public" class="">
+  <div class="hero">
+    <div class="hero-math">∑∫π</div>
+    <h1>📐 Matemáticas con Javier</h1>
+    <p>Secundario &amp; Universitario · Aprendé a tu ritmo</p>
+  </div>
+  <div class="main">
+  <div class="tip-banner">
+    <div class="tip-text"><strong>☕ ¿Te ayudó este canal?</strong> Podés invitarme un café y apoyar el contenido gratuito.</div>
+    <button class="btn-tip" onclick="window.open('https://link.mercadopago.com.ar/pofejavi','_blank')">💛 Dejar propina</button>
+  </div>
+  <div style="margin-bottom:1rem;">
+    <input id="search-input" class="form-input" placeholder="🔍 Buscar video por título o tema..." oninput="renderPublic()" style="width:100%;font-size:14px;padding:10px 14px;" />
+  </div>
+  <div class="level-tabs">
+    <button class="level-tab active" onclick="filterLevel('all',this)">Todos</button>
+    <button class="level-tab" onclick="filterLevel('secundario',this)">Secundario</button>
+    <button class="level-tab" onclick="filterLevel('universitario',this)">Universitario</button>
+  </div>
+  <div id="top-videos-public" style="margin-bottom:2rem;"></div>
+  <div id="video-grid" class="video-grid">
+    <div class="loading-state"><div class="spinner"></div>Cargando videos...</div>
+  </div>
+</div>
+</div>
+
+<!-- VISTA CONSULTAS -->
+<div class="main hidden" id="view-consultas">
+  <div style="max-width:600px;margin:0 auto;">
+    <div style="margin-bottom:1.5rem;">
+      <h2 style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px;">📩 Enviame tu consulta</h2>
+      <p style="font-size:14px;color:var(--text2);">¿Tenés un problema que no podés resolver? Subí una foto y te respondo, ¡y quizás hago un video resolviéndolo!</p>
+    </div>
+    <div class="admin-section">
+      <div class="add-video-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tu nombre</label>
+            <input class="form-input" id="consulta-nombre" placeholder="Ej: María García" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tu email</label>
+            <input class="form-input" id="consulta-email" type="email" placeholder="tu@email.com" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contame tu duda</label>
+          <textarea class="form-input" id="consulta-comentario" rows="4" placeholder="Describí el problema o ejercicio que no podés resolver..." style="resize:vertical;"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Foto del problema (opcional)</label>
+          <input type="file" id="consulta-imagen" accept="image/*" class="form-input" style="padding:6px;" />
+        </div>
+        <button class="btn-primary" onclick="enviarConsulta()" id="btn-enviar-consulta">📤 Enviar consulta</button>
+        <div id="consulta-success" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:var(--radius-sm);padding:12px;font-size:13px;color:#166534;font-weight:500;">
+          ✅ ¡Consulta enviada! Javier va a revisarla y te responderá por email.
+        </div>
+        <div id="consulta-error" style="display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:var(--radius-sm);padding:12px;font-size:13px;color:#dc2626;font-weight:500;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- VISTA ADMIN -->
+<div class="main hidden" id="view-admin">
+  <div class="admin-header">
+    <div class="admin-title">Panel de administrador</div>
+    <button onclick="showView('public')" class="btn-nav" style="color:var(--text);background:var(--surface);border-color:var(--border);">← Volver al canal</button>
+  </div>
+
+  <div class="stats-grid" id="stats-grid">
+    <div class="loading-state" style="grid-column:1/-1"><div class="spinner"></div></div>
+  </div>
+
+  <div class="admin-section">
+    <div class="section-title">Ranking de videos más vistos</div>
+    <div class="ranking-list" id="ranking-list"></div>
+  </div>
+
+  <div class="admin-section">
+    <div class="section-title">Agregar nuevo video</div>
+    <div class="add-video-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Título del video</label>
+          <input class="form-input" id="inp-title" placeholder="Ej: Límites y continuidad" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nivel</label>
+          <select class="form-select" id="inp-level">
+            <option value="secundario">Secundario</option>
+            <option value="universitario">Universitario</option>
+            <option value="ambos">Ambos</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">URL de YouTube</label>
+          <input class="form-input" id="inp-url" placeholder="https://youtube.com/watch?v=..." />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tema</label>
+          <input class="form-input" id="inp-topic" placeholder="Ej: Álgebra, Cálculo..." />
+        </div>
+      </div>
+      <button class="btn-primary" id="btn-add" onclick="addVideo()">Agregar video</button>
+    </div>
+  </div>
+
+  <div class="admin-section" id="admin-consultas-section">
+    <div class="section-title">📩 Consultas recibidas</div>
+    <div id="admin-consultas-list"><div class="loading-state"><div class="spinner"></div>Cargando...</div></div>
+  </div>
+  <div class="admin-section">
+    <div class="section-title">Gestionar videos</div>
+    <div class="video-manage-list" id="video-manage-list"></div>
+  </div>
+</div>
+
+<!-- MODAL LOGIN ADMIN -->
+<div class="modal-overlay hidden" id="modal-login">
+  <div class="modal">
+    <div class="modal-title">Acceso de administrador</div>
+    <div class="modal-subtitle">Ingresá tu contraseña para continuar</div>
+    <div class="modal-error" id="modal-error">Contraseña incorrecta. Intentá de nuevo.</div>
+    <input class="modal-input" id="admin-pass" type="password" placeholder="Contraseña" onkeydown="if(event.key==='Enter')checkAdmin()" />
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="checkAdmin()">Ingresar</button>
+      <button class="btn-nav" style="color:var(--text);background:var(--surface);border:1px solid var(--border);padding:8px 16px;border-radius:var(--radius-sm);cursor:pointer;" onclick="closeModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ============================================================
+  // CONFIGURACIÓN — no toques nada más salvo estas dos líneas
+  // ============================================================
+  const SUPABASE_URL  = 'https://uobxaowvbgzaystwulzi.supabase.co';
+  const SUPABASE_KEY  = 'sb_publishable_epmITHBwvKi83-zFLLHFfw_al_w_eHC';
+  const ADMIN_PASS = null; // contraseña movida a Supabase
+  const YOUTUBE_CHANNEL = 'https://www.youtube.com/@eljavimatematicas'; // ← cambiá por tu canal
+  // ============================================================
+
+  const headers = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': 'Bearer ' + SUPABASE_KEY,
+    'Content-Type': 'application/json',
+    'Prefer': 'return=representation'
+  };
+
+  let currentLevel = 'all';
+  let likedVideos = JSON.parse(localStorage.getItem('liked_videos') || '[]');
+
+  // --- API helpers ---
+  async function sbGet(table, params = '') {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, { headers });
+    return r.json();
+  }
+  async function sbPatch(table, id, body) {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+      method: 'PATCH', headers, body: JSON.stringify(body)
+    });
+    return r.json();
+  }
+  async function sbPost(table, body) {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+      method: 'POST', headers, body: JSON.stringify(body)
+    });
+    return r.json();
+  }
+  async function sbDelete(table, id) {
+    await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'DELETE', headers });
+  }
+
+  // --- YouTube helpers ---
+  function getYouTubeId(url) {
+    const m = url.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : null;
+  }
+  function badgesHtml(level) {
+    if (level === 'ambos') return `<span class="level-badge badge-sec">Secundario</span><span class="level-badge badge-uni">Universitario</span>`;
+    if (level === 'secundario') return `<span class="level-badge badge-sec">Secundario</span>`;
+    return `<span class="level-badge badge-uni">Universitario</span>`;
+  }
+
+  // --- Caché ---
+  const CACHE_KEY = 'videos_cache';
+  const CACHE_TTL = 3 * 60 * 1000; // 3 minutos
+
+  function getCachedVideos() {
+    try {
+      const c = JSON.parse(localStorage.getItem(CACHE_KEY));
+      if (c && Date.now() - c.ts < CACHE_TTL) return c.data;
+    } catch(e) {}
+    return null;
+  }
+  function setCachedVideos(data) {
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch(e) {}
+  }
+
+  // --- Render pública ---
+  async function renderPublic() {
+    const grid = document.getElementById('video-grid');
+    let cached = getCachedVideos();
+    if (cached) {
+      renderVideos(cached);
+      sbGet('videos', 'order=created_at.desc').then(fresh => {
+        if (Array.isArray(fresh)) { setCachedVideos(fresh); renderVideos(fresh); }
+      });
+      return;
+    }
+    grid.innerHTML = '<div class="loading-state"><div class="spinner"></div>Cargando videos...</div>';
+    let videos = await sbGet('videos', 'order=created_at.desc');
+    if (Array.isArray(videos)) setCachedVideos(videos);
+    // Registrar visita
+    incrementStat('visits');
+    renderVideos(videos);
+  }
+
+  function renderVideos(videos) {
+    const grid = document.getElementById('video-grid');
+    if (!Array.isArray(videos)) { grid.innerHTML = '<div class="empty-state">Error al cargar videos.</div>'; return; }
+    if (currentLevel !== 'all') videos = videos.filter(v => v.level === currentLevel || v.level === 'ambos');
+    const q = (document.getElementById('search-input')?.value || '').toLowerCase();
+    if (q) videos = videos.filter(v => v.title.toLowerCase().includes(q) || (v.topic||'').toLowerCase().includes(q));
+    if (!videos.length) { grid.innerHTML = '<div class="empty-state">No hay videos en esta categoría todavía.</div>'; return; }
+    const topVideos = [...videos].sort((a,b) => b.views - a.views).slice(0,3);
+    const maxV = topVideos[0]?.views || 1;
+    const topEl = document.getElementById('top-videos-public');
+    if (topEl) topEl.innerHTML = topVideos.length ? `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;">
+        <div class="section-title" style="font-size:14px;font-weight:600;margin-bottom:12px;">🏆 Top videos más vistos</div>
+        <div class="ranking-list">
+          ${topVideos.map((v,i) => `
+            <div class="ranking-item" onclick="openVideo(${v.id},'${v.url}')" style="cursor:pointer;">
+              <div class="rank-num">#${i+1}</div>
+              <div class="rank-info">
+                <div class="rank-title">${v.title}</div>
+                <div class="rank-views">${v.views} vistas · ${v.topic||''}</div>
+              </div>
+              <div class="rank-bar-wrap"><div class="rank-bar" style="width:${Math.round(v.views/maxV*100)}%"></div></div>
+            </div>`).join('')}
+        </div>
+      </div>` : '';
+    grid.innerHTML = videos.map(v => {
+      const ytId = getYouTubeId(v.url);
+      const thumb = ytId ? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg` : '';
+      const liked = likedVideos.includes(v.id);
+      return `<div class="video-card">
+        <div class="video-thumb" onclick="openVideo(${v.id},'${v.url}')">
+          ${thumb ? `<img class="thumb-img" src="${thumb}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=this.src.replace('hqdefault','mqdefault')" />` : ''}
+          <div class="play-btn"><div class="play-triangle"></div></div>
+          <div class="badge-wrap">${badgesHtml(v.level)}</div>
+        </div>
+        <div class="video-info">
+          <div class="video-title">${v.title}</div>
+          <div class="video-meta">${v.topic || ''} · ${v.views} vistas</div>
+          <div class="video-actions">
+            <button class="btn-like ${liked ? 'liked' : ''}" onclick="toggleLike(event,${v.id})">
+              ${liked ? '♥' : '♡'} <span id="likes-${v.id}">${v.likes}</span>
+            </button>
+            <button class="btn-sub" onclick="handleSub()">▶ Suscribirse</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  async function openVideo(id, url) {
+    window.open(url, '_blank');
+    // Incrementar vistas
+    const videos = await sbGet('videos', `id=eq.${id}&select=views`);
+    if (videos[0]) await sbPatch('videos', id, { views: videos[0].views + 1 });
+  }
+
+  async function toggleLike(e, id) {
+    e.stopPropagation();
+    const btn = e.currentTarget;
+    const idx = likedVideos.indexOf(id);
+    const liked = idx !== -1;
+
+    // Leer el valor real desde Supabase
+    const rows = await sbGet('videos', `id=eq.${id}&select=likes`);
+    if (!rows || !rows[0]) return;
+    const realLikes = rows[0].likes;
+    const newLikes = liked ? Math.max(0, realLikes - 1) : realLikes + 1;
+
+    if (liked) likedVideos.splice(idx, 1); else likedVideos.push(id);
+    localStorage.setItem('liked_videos', JSON.stringify(likedVideos));
+
+    btn.innerHTML = (likedVideos.includes(id) ? '♥ ' : '♡ ') + `<span id="likes-${id}">${newLikes}</span>`;
+    btn.className = 'btn-like' + (likedVideos.includes(id) ? ' liked' : '');
+
+    await sbPatch('videos', id, { likes: newLikes });
+    if (!liked) showToast('¡Me gusta registrado!');
+    
+    // Invalidar caché para que la próxima carga muestre el valor correcto
+    localStorage.removeItem('videos_cache');
+  }
+
+  async function handleSub() {
+    window.open(YOUTUBE_CHANNEL, '_blank');
+    incrementStat('sub_clicks');
+  }
+
+  async function incrementStat(key) {
+    const rows = await sbGet('stats', `key=eq.${key}&select=id,value`);
+    if (rows[0]) await sbPatch('stats', rows[0].id, { value: rows[0].value + 1 });
+  }
+
+  // --- Admin ---
+  function openAdminLogin() {
+    document.getElementById('modal-login').classList.remove('hidden');
+    document.getElementById('admin-pass').value = '';
+    document.getElementById('modal-error').style.display = 'none';
+    setTimeout(() => document.getElementById('admin-pass').focus(), 100);
+  }
+  function closeModal() {
+    document.getElementById('modal-login').classList.add('hidden');
+  }
+  async function checkAdmin() {
+    const pass = document.getElementById('admin-pass').value;
+    const btn = document.querySelector('#modal-login .btn-primary');
+    btn.disabled = true; btn.textContent = 'Verificando...';
+    try {
+      const rows = await sbGet('admin_config', `key=eq.admin_pass&select=value`);
+      if (rows && rows[0] && rows[0].value === pass) {
+        closeModal();
+        showView('admin');
+        renderAdmin();
+      } else {
+        document.getElementById('modal-error').style.display = 'block';
+        document.getElementById('admin-pass').value = '';
+        document.getElementById('admin-pass').focus();
+      }
+    } catch(e) {
+      document.getElementById('modal-error').style.display = 'block';
+    }
+    btn.disabled = false; btn.textContent = 'Ingresar';
+  }
+
+  async function renderAdmin() {
+    // Stats
+    const stats = await sbGet('stats', '');
+    const videos = await sbGet('videos', 'order=views.desc');
+    const totalLikes = Array.isArray(videos) ? videos.reduce((a, v) => a + v.likes, 0) : 0;
+    const totalViews = Array.isArray(videos) ? videos.reduce((a, v) => a + v.views, 0) : 0;
+    const visits = stats.find ? (stats.find(s => s.key === 'visits')?.value || 0) : 0;
+    const subs = stats.find ? (stats.find(s => s.key === 'sub_clicks')?.value || 0) : 0;
+
+    document.getElementById('stats-grid').innerHTML = `
+      <div class="stat-card"><div class="stat-icon">👁</div><div class="stat-value">${visits}</div><div class="stat-label">Visitas a la página</div></div>
+      <div class="stat-card"><div class="stat-icon">🔔</div><div class="stat-value">${subs}</div><div class="stat-label">Clicks a suscribir</div></div>
+      <div class="stat-card"><div class="stat-icon">♥</div><div class="stat-value">${totalLikes}</div><div class="stat-label">Likes totales</div></div>
+      <div class="stat-card"><div class="stat-icon">▶</div><div class="stat-value">${totalViews}</div><div class="stat-label">Visualizaciones</div></div>
+      <div class="stat-card"><div class="stat-icon">🎬</div><div class="stat-value">${Array.isArray(videos) ? videos.length : 0}</div><div class="stat-label">Videos publicados</div></div>`;
+
+    if (Array.isArray(videos) && videos.length) {
+      const top = videos.slice(0, 5);
+      const maxV = top[0].views || 1;
+      document.getElementById('ranking-list').innerHTML = top.map((v, i) => `
+        <div class="ranking-item">
+          <div class="rank-num">#${i+1}</div>
+          <div class="rank-info">
+            <div class="rank-title">${v.title}</div>
+            <div class="rank-views">${v.views} vistas · ${v.likes} likes · ${v.level}</div>
+          </div>
+          <div class="rank-bar-wrap"><div class="rank-bar" style="width:${Math.round(v.views/maxV*100)}%"></div></div>
+        </div>`).join('');
+
+      document.getElementById('video-manage-list').innerHTML = videos.map(v => `
+        <div class="video-manage-item">
+          <div class="manage-title">${v.title}
+            <span class="manage-badge ${v.level === 'secundario' ? 'badge-sec' : v.level === 'universitario' ? 'badge-uni' : ''}" style="${v.level==='ambos'?'background:#e8a020;color:#1a2744':''}">${v.level}</span>
+          </div>
+          <div class="manage-views">${v.views} vistas</div>
+          <button class="btn-danger" onclick="deleteVideo(${v.id})">Eliminar</button>
+        </div>`).join('');
+    } else {
+      document.getElementById('ranking-list').innerHTML = '<div class="empty-state">Todavía no hay videos.</div>';
+      document.getElementById('video-manage-list').innerHTML = '<div class="empty-state">Todavía no hay videos.</div>';
+    }
+    renderConsultasAdmin();
+  }
+
+  async function addVideo() {
+    const title = document.getElementById('inp-title').value.trim();
+    const level = document.getElementById('inp-level').value;
+    const url   = document.getElementById('inp-url').value.trim();
+    const topic = document.getElementById('inp-topic').value.trim();
+    if (!title || !url) { showToast('Completá al menos el título y la URL'); return; }
+    const btn = document.getElementById('btn-add');
+    btn.disabled = true; btn.textContent = 'Guardando...';
+    const result = await sbPost('videos', { title, level, url, topic: topic || 'General', views: 0, likes: 0 });
+    btn.disabled = false; btn.textContent = 'Agregar video';
+    if (Array.isArray(result) && result[0]) {
+      document.getElementById('inp-title').value = '';
+      document.getElementById('inp-url').value = '';
+      document.getElementById('inp-topic').value = '';
+      showToast('¡Video agregado con éxito!');
+      renderAdmin();
+    } else {
+      showToast('Error al guardar. Revisá los datos.');
+    }
+  }
+
+  async function deleteVideo(id) {
+    if (!confirm('¿Seguro que querés eliminar este video?')) return;
+    await sbDelete('videos', id);
+    showToast('Video eliminado');
+    renderAdmin();
+  }
+
+  function showView(view) {
+    document.getElementById('view-public').classList.toggle('hidden', view !== 'public');
+    document.getElementById('view-admin').classList.toggle('hidden', view !== 'admin');
+    document.getElementById('view-consultas').classList.toggle('hidden', view !== 'consultas');
+    document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
+    if (view === 'public') { renderPublic(); document.querySelectorAll('.btn-nav')[2].classList.add('active'); }
+    if (view === 'admin') { document.querySelectorAll('.btn-nav')[3].classList.add('active'); }
+    if (view === 'consultas') { renderConsultasAdmin(); document.querySelectorAll('.btn-nav')[0].classList.add('active'); }
+  }
+
+  function filterLevel(level, btn) {
+    currentLevel = level;
+    document.querySelectorAll('.level-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderPublic();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // Cerrar modal al hacer click fuera
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'a' || e.key === 'A') {
+      if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        openAdminLogin();
+      }
+    }
+  });    
+
+  // --- CONSULTAS ---
+  async function enviarConsulta() {
+    const nombre = document.getElementById('consulta-nombre').value.trim();
+    const email = document.getElementById('consulta-email').value.trim();
+    const comentario = document.getElementById('consulta-comentario').value.trim();
+    const imagen = document.getElementById('consulta-imagen').files[0];
+    const btnEnviar = document.getElementById('btn-enviar-consulta');
+    const successDiv = document.getElementById('consulta-success');
+    const errorDiv = document.getElementById('consulta-error');
+
+    successDiv.style.display = 'none';
+    errorDiv.style.display = 'none';
+
+    if (!nombre || !email || !comentario) {
+      errorDiv.textContent = '⚠️ Por favor completá nombre, email y comentario.';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errorDiv.textContent = '⚠️ El email no parece válido.';
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    btnEnviar.disabled = true;
+    btnEnviar.textContent = 'Enviando...';
+
+    try {
+      let imagen_url = null;
+      if (imagen) {
+        const ext = imagen.name.split('.').pop();
+        const fileName = `${Date.now()}.${ext}`;
+        const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/consultas/${fileName}`, {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': imagen.type },
+          body: imagen
+        });
+        if (uploadRes.ok) {
+          imagen_url = `${SUPABASE_URL}/storage/v1/object/public/consultas/${fileName}`;
+        }
+      }
+
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/consultas`, {
+        method: 'POST',
+        headers: { ...headers, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ nombre, email, comentario, imagen_url, respondido: false })
+      });
+
+      if (!res.ok) throw new Error('Error guardando consulta');
+
+      // Notificar al admin
+      await fetch('/.netlify/functions/notify-admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre, email, comentario, imagen_url })
+      });
+
+      successDiv.style.display = 'block';
+      document.getElementById('consulta-nombre').value = '';
+      document.getElementById('consulta-email').value = '';
+      document.getElementById('consulta-comentario').value = '';
+      document.getElementById('consulta-imagen').value = '';
+    } catch(e) {
+      errorDiv.textContent = '❌ Hubo un error al enviar. Intentá de nuevo.';
+      errorDiv.style.display = 'block';
+    }
+
+    btnEnviar.disabled = false;
+    btnEnviar.textContent = '📤 Enviar consulta';
+  }
+
+  async function renderConsultasAdmin() {
+    const list = document.getElementById('admin-consultas-list');
+    list.innerHTML = '<div class="loading-state"><div class="spinner"></div>Cargando...</div>';
+    const consultas = await sbGet('consultas', 'order=created_at.desc');
+    if (!consultas || consultas.length === 0) {
+      list.innerHTML = '<div class="empty-state">No hay consultas todavía.</div>';
+      return;
+    }
+    list.innerHTML = consultas.map(c => `
+      <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:10px;border:1px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text);">${c.nombre} <span style="color:var(--text2);font-weight:400;">· ${c.email}</span></div>
+            <div style="font-size:11px;color:var(--text2);margin-top:2px;">${new Date(c.created_at).toLocaleDateString('es-AR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+          </div>
+          <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;background:${c.respondido ? '#dcfce7' : '#fef9c3'};color:${c.respondido ? '#166534' : '#854d0e'};">${c.respondido ? '✅ Respondido' : '⏳ Pendiente'}</span>
+        </div>
+        <p style="font-size:13px;color:var(--text);margin:10px 0 8px;line-height:1.5;">${c.comentario}</p>
+        ${c.imagen_url ? `<a href="${c.imagen_url}" target="_blank"><img src="${c.imagen_url}" style="max-width:200px;border-radius:8px;margin-bottom:8px;border:1px solid var(--border);" /></a>` : ''}
+        ${!c.respondido ? `
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <textarea id="resp-${c.id}" class="form-input" rows="2" placeholder="Escribí tu respuesta..." style="flex:1;resize:vertical;"></textarea>
+            <button class="btn-primary" style="align-self:flex-end;" onclick="responderConsulta(${c.id},'${c.email}','${c.nombre}',\`${c.comentario.replace(/`/g,"'")}\`)">Responder</button>
+          </div>` : `<div style="font-size:12px;color:#166534;background:#f0fdf4;padding:8px 12px;border-radius:8px;">✅ ${c.respuesta}</div>`}
+      </div>
+    `).join('');
+  }
+
+  async function responderConsulta(id, email, nombre, comentario) {
+    const respuesta = document.getElementById(`resp-${id}`).value.trim();
+    if (!respuesta) { showToast('Escribí una respuesta primero'); return; }
+
+    try {
+      await sbPatch('consultas', id, { respuesta, respondido: true });
+
+      await fetch('/.netlify/functions/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: email, nombre, comentario, respuesta })
+      });
+
+      showToast('✅ Respuesta enviada por email!');
+      renderConsultasAdmin();
+    } catch(e) {
+      showToast('❌ Error al responder');
+    }
+  }
+// --- IDIOMA ---
+  let lang = 'es';
+  const i18n = {
+    es: {
+      'Ver canal': 'Ver canal', 'search-placeholder': 'Buscar video por título o tema...',
+      'todos': 'Todos', 'secundario': 'Secundario', 'universitario': 'Universitario',
+      'top-title': '🏆 Top videos más vistos', 'vistas': 'vistas', 'likes': 'likes',
+      'suscribirse': '▶ Suscribirse', 'tip-text': '¿Te ayudó este canal? Podés invitarme un café.',
+      'btn-tip': '💛 Dejar propina', 'loading': 'Cargando videos...'
+    },
+    en: {
+      'Ver canal': 'Watch channel', 'search-placeholder': 'Search video by title or topic...',
+      'todos': 'All', 'secundario': 'High school', 'universitario': 'University',
+      'top-title': '🏆 Most watched videos', 'vistas': 'views', 'likes': 'likes',
+      'suscribirse': '▶ Subscribe', 'tip-text': 'Did this channel help you? Buy me a coffee!',
+      'btn-tip': '💛 Leave a tip', 'loading': 'Loading videos...'
+    }
+  };
+
+  function toggleLang() {
+    lang = lang === 'es' ? 'en' : 'es';
+    const btn = document.querySelector('.btn-lang');
+    btn.textContent = lang === 'es' ? '🌐 EN' : '🌐 ES';
+    const t = i18n[lang];
+    // Barra de búsqueda
+    const s = document.getElementById('search-input');
+    if (s) s.placeholder = t['search-placeholder'];
+    // Tabs
+    const tabs = document.querySelectorAll('.level-tab');
+    if (tabs[0]) tabs[0].textContent = t['todos'];
+    if (tabs[1]) tabs[1].textContent = t['secundario'];
+    if (tabs[2]) tabs[2].textContent = t['universitario'];
+    // Propina
+    const tipText = document.querySelector('.tip-text');
+    if (tipText) tipText.innerHTML = `<strong>☕ ${t['tip-text']}</strong>`;
+    const btnTip = document.querySelector('.btn-tip');
+    if (btnTip) btnTip.textContent = t['btn-tip'];
+    // Consultas
+    const h2Consultas = document.querySelector('#view-consultas h2');
+    if (h2Consultas) h2Consultas.textContent = lang === 'es' ? '📩 Enviame tu consulta' : '📩 Send me your question';
+    const pConsultas = document.querySelector('#view-consultas p');
+    if (pConsultas) pConsultas.textContent = lang === 'es' 
+      ? '¿Tenés un problema que no podés resolver? Subí una foto y te respondo, ¡y quizás hago un video resolviéndolo!'
+      : "Can't solve a problem? Upload a photo and I'll answer, and maybe make a video solving it!";
+    const labelNombre = document.querySelector('#view-consultas .form-label:nth-of-type(1)');
+    if (labelNombre) labelNombre.textContent = lang === 'es' ? 'Tu nombre' : 'Your name';
+    const labelEmail = document.querySelector('#view-consultas .form-label:nth-of-type(2)');
+    if (labelEmail) labelEmail.textContent = lang === 'es' ? 'Tu email' : 'Your email';
+    const labelDuda = document.querySelector('#view-consultas .form-label:nth-of-type(3)');
+    if (labelDuda) labelDuda.textContent = lang === 'es' ? 'Contame tu duda' : 'Tell me your question';
+    const labelFoto = document.querySelector('#view-consultas .form-label:nth-of-type(4)');
+    if (labelFoto) labelFoto.textContent = lang === 'es' ? 'Foto del problema (opcional)' : 'Photo of the problem (optional)';
+    const textareaConsulta = document.getElementById('consulta-comentario');
+    if (textareaConsulta) textareaConsulta.placeholder = lang === 'es' ? 'Describí el problema o ejercicio que no podés resolver...' : 'Describe the problem or exercise you cannot solve...';
+    const inputNombre = document.getElementById('consulta-nombre');
+    if (inputNombre) inputNombre.placeholder = lang === 'es' ? 'Ej: María García' : 'E.g: Maria Garcia';
+    const btnEnviar = document.getElementById('btn-enviar-consulta');
+    if (btnEnviar) btnEnviar.textContent = lang === 'es' ? '📤 Enviar consulta' : '📤 Send question';
+    // Re-renderizar para aplicar traducciones de vistas/likes
+    renderPublic();
+  }
+
+  // Arrancar
+  showView('public');
+</script>
+</body>
+</html>
