@@ -437,27 +437,27 @@
 <div class="main hidden" id="view-consultas">
   <div style="max-width:600px;margin:0 auto;">
     <div style="margin-bottom:1.5rem;">
-      <h2 style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px;">📩 Enviame tu consulta</h2>
-      <p style="font-size:14px;color:var(--text2);">¿Tenés un problema que no podés resolver? Subí una foto y te respondo, ¡y quizás hago un video resolviéndolo!</p>
+      <h2 id="consultas-title" style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px;">📩 Enviame tu consulta</h2>
+      <p id="consultas-desc" style="font-size:14px;color:var(--text2);">¿Tenés un problema que no podés resolver? Subí una foto y te respondo, ¡y quizás hago un video resolviéndolo!</p>
     </div>
     <div class="admin-section">
       <div class="add-video-form">
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Tu nombre</label>
+            <label class="form-label" id="label-nombre">TU NOMBRE</label>
             <input class="form-input" id="consulta-nombre" placeholder="Ej: María García" />
           </div>
           <div class="form-group">
-            <label class="form-label">Tu email</label>
+            <label class="form-label" id="label-email">TU EMAIL</label>
             <input class="form-input" id="consulta-email" type="email" placeholder="tu@email.com" />
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Contame tu duda</label>
+          <label class="form-label" id="label-duda">CONTAME TU DUDA</label>
           <textarea class="form-input" id="consulta-comentario" rows="4" placeholder="Describí el problema o ejercicio que no podés resolver..." style="resize:vertical;"></textarea>
         </div>
         <div class="form-group">
-          <label class="form-label">Foto del problema (opcional)</label>
+          <label class="form-label" id="label-foto">FOTO DEL PROBLEMA (OPCIONAL)</label>
           <input type="file" id="consulta-imagen" accept="image/*" class="form-input" style="padding:6px;" />
         </div>
         <button class="btn-primary" onclick="enviarConsulta()" id="btn-enviar-consulta">📤 Enviar consulta</button>
@@ -589,9 +589,11 @@
     return m ? m[1] : null;
   }
   function badgesHtml(level) {
-    if (level === 'ambos') return `<span class="level-badge badge-sec">Secundario</span><span class="level-badge badge-uni">Universitario</span>`;
-    if (level === 'secundario') return `<span class="level-badge badge-sec">Secundario</span>`;
-    return `<span class="level-badge badge-uni">Universitario</span>`;
+    const sec = i18n[lang]['secundario'];
+    const uni = i18n[lang]['universitario'];
+    if (level === 'ambos') return `<span class="level-badge badge-sec">${sec}</span><span class="level-badge badge-uni">${uni}</span>`;
+    if (level === 'secundario') return `<span class="level-badge badge-sec">${sec}</span>`;
+    return `<span class="level-badge badge-uni">${uni}</span>`;
   }
 
   // --- Caché ---
@@ -630,24 +632,24 @@
 
   function renderVideos(videos) {
     const grid = document.getElementById('video-grid');
-    if (!Array.isArray(videos)) { grid.innerHTML = '<div class="empty-state">Error al cargar videos.</div>'; return; }
+    if (!Array.isArray(videos)) { grid.innerHTML = `<div class="empty-state">${i18n[lang]['error-videos']}</div>`; return; }
     if (currentLevel !== 'all') videos = videos.filter(v => v.level === currentLevel || v.level === 'ambos');
     const q = (document.getElementById('search-input')?.value || '').toLowerCase();
     if (q) videos = videos.filter(v => v.title.toLowerCase().includes(q) || (v.topic||'').toLowerCase().includes(q));
-    if (!videos.length) { grid.innerHTML = '<div class="empty-state">No hay videos en esta categoría todavía.</div>'; return; }
+    if (!videos.length) { grid.innerHTML = `<div class="empty-state">${i18n[lang]['no-videos']}</div>`; return; }
     const topVideos = [...videos].sort((a,b) => b.views - a.views).slice(0,3);
     const maxV = topVideos[0]?.views || 1;
     const topEl = document.getElementById('top-videos-public');
     if (topEl) topEl.innerHTML = topVideos.length ? `
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;">
-        <div class="section-title" style="font-size:14px;font-weight:600;margin-bottom:12px;">🏆 Top videos más vistos</div>
+        <div class="section-title" style="font-size:14px;font-weight:600;margin-bottom:12px;">${i18n[lang]['top-title']}</div>
         <div class="ranking-list">
           ${topVideos.map((v,i) => `
             <div class="ranking-item" onclick="openVideo(${v.id},'${v.url}')" style="cursor:pointer;">
               <div class="rank-num">#${i+1}</div>
               <div class="rank-info">
                 <div class="rank-title">${v.title}</div>
-                <div class="rank-views">${v.views} vistas · ${v.topic||''}</div>
+                <div class="rank-views">${v.views} ${i18n[lang]['rank-views']} · ${v.topic||''}</div>
               </div>
               <div class="rank-bar-wrap"><div class="rank-bar" style="width:${Math.round(v.views/maxV*100)}%"></div></div>
             </div>`).join('')}
@@ -665,12 +667,12 @@
         </div>
         <div class="video-info">
           <div class="video-title">${v.title}</div>
-          <div class="video-meta">${v.topic || ''} · ${v.views} vistas</div>
+          <div class="video-meta">${v.topic || ''} · ${v.views} ${i18n[lang]['vistas']}</div>
           <div class="video-actions">
             <button class="btn-like ${liked ? 'liked' : ''}" onclick="toggleLike(event,${v.id})">
               ${liked ? '♥' : '♡'} <span id="likes-${v.id}">${v.likes}</span>
             </button>
-            <button class="btn-sub" onclick="handleSub()">▶ Suscribirse</button>
+            <button class="btn-sub" onclick="handleSub()">${i18n[lang]['suscribirse']}</button>
           </div>
         </div>
       </div>`;
@@ -868,12 +870,12 @@ document.addEventListener('keydown', function(e) {
     errorDiv.style.display = 'none';
 
     if (!nombre || !email || !comentario) {
-      errorDiv.textContent = '⚠️ Por favor completá nombre, email y comentario.';
+      errorDiv.textContent = i18n[lang]['err-required'];
       errorDiv.style.display = 'block';
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      errorDiv.textContent = '⚠️ El email no parece válido.';
+      errorDiv.textContent = i18n[lang]['err-email'];
       errorDiv.style.display = 'block';
       return;
     }
@@ -917,7 +919,7 @@ document.addEventListener('keydown', function(e) {
       document.getElementById('consulta-comentario').value = '';
       document.getElementById('consulta-imagen').value = '';
     } catch(e) {
-      errorDiv.textContent = '❌ Hubo un error al enviar. Intentá de nuevo.';
+      errorDiv.textContent = i18n[lang]['err-send'];
       errorDiv.style.display = 'block';
     }
 
@@ -976,18 +978,56 @@ document.addEventListener('keydown', function(e) {
   let lang = 'es';
   const i18n = {
     es: {
-      'Ver canal': 'Ver canal', 'search-placeholder': 'Buscar video por título o tema...',
+      'Ver canal': 'Ver canal', 'search-placeholder': '🔍 Buscar video por título o tema...',
       'todos': 'Todos', 'secundario': 'Secundario', 'universitario': 'Universitario',
       'top-title': '🏆 Top videos más vistos', 'vistas': 'vistas', 'likes': 'likes',
       'suscribirse': '▶ Suscribirse', 'tip-text': '¿Te ayudó este canal? Podés invitarme un café.',
-      'btn-tip': '💛 Dejar propina', 'loading': 'Cargando videos...'
+      'btn-tip': '💛 Dejar propina', 'loading': 'Cargando videos...',
+      'navbar-subtitle': 'Secundario & Universitario',
+      'hero-p': 'Secundario & Universitario · Aprendé a tu ritmo',
+      'tooltip': '📎 ¡Adjuntá aquí el ejercicio que no podés resolver!',
+      'consultas-btn': '📩 Consultas',
+      'no-videos': 'No hay videos en esta categoría todavía.',
+      'error-videos': 'Error al cargar videos.',
+      'rank-views': 'vistas',
+      'like-btn': '♡', 'liked-btn': '♥',
+      'consultas-title': '📩 Enviame tu consulta',
+      'consultas-desc': '¿Tenés un problema que no podés resolver? Subí una foto y te respondo, ¡y quizás hago un video resolviéndolo!',
+      'label-nombre': 'TU NOMBRE', 'label-email': 'TU EMAIL',
+      'label-duda': 'CONTAME TU DUDA', 'label-foto': 'FOTO DEL PROBLEMA (OPCIONAL)',
+      'ph-nombre': 'Ej: María García', 'ph-email': 'tu@email.com',
+      'ph-duda': 'Describí el problema o ejercicio que no podés resolver...',
+      'btn-enviar': '📤 Enviar consulta',
+      'success-msg': '✅ ¡Consulta enviada! Javier va a revisarla y te responderá por email.',
+      'err-required': '⚠️ Por favor completá nombre, email y comentario.',
+      'err-email': '⚠️ El email no parece válido.',
+      'err-send': '❌ Hubo un error al enviar. Intentá de nuevo.',
     },
     en: {
-      'Ver canal': 'Watch channel', 'search-placeholder': 'Search video by title or topic...',
+      'Ver canal': 'Watch channel', 'search-placeholder': '🔍 Search video by title or topic...',
       'todos': 'All', 'secundario': 'High school', 'universitario': 'University',
       'top-title': '🏆 Most watched videos', 'vistas': 'views', 'likes': 'likes',
       'suscribirse': '▶ Subscribe', 'tip-text': 'Did this channel help you? Buy me a coffee!',
-      'btn-tip': '💛 Leave a tip', 'loading': 'Loading videos...'
+      'btn-tip': '💛 Leave a tip', 'loading': 'Loading videos...',
+      'navbar-subtitle': 'High school & University',
+      'hero-p': 'High school & University · Learn at your own pace',
+      'tooltip': '📎 Attach the exercise you cannot solve here!',
+      'consultas-btn': '📩 Questions',
+      'no-videos': 'No videos in this category yet.',
+      'error-videos': 'Error loading videos.',
+      'rank-views': 'views',
+      'like-btn': '♡', 'liked-btn': '♥',
+      'consultas-title': '📩 Send me your question',
+      'consultas-desc': "Can't solve a problem? Upload a photo and I'll answer, and maybe make a video solving it!",
+      'label-nombre': 'YOUR NAME', 'label-email': 'YOUR EMAIL',
+      'label-duda': 'TELL ME YOUR QUESTION', 'label-foto': 'PHOTO OF THE PROBLEM (OPTIONAL)',
+      'ph-nombre': 'E.g: Maria Garcia', 'ph-email': 'you@email.com',
+      'ph-duda': 'Describe the problem or exercise you cannot solve...',
+      'btn-enviar': '📤 Send question',
+      'success-msg': '✅ Question sent! Javier will review it and reply by email.',
+      'err-required': '⚠️ Please fill in name, email and message.',
+      'err-email': '⚠️ The email does not look valid.',
+      'err-send': '❌ Error sending. Please try again.',
     }
   };
 
@@ -1030,9 +1070,50 @@ document.addEventListener('keydown', function(e) {
     if (inputNombre) inputNombre.placeholder = lang === 'es' ? 'Ej: María García' : 'E.g: Maria Garcia';
     const btnEnviar = document.getElementById('btn-enviar-consulta');
     if (btnEnviar) btnEnviar.textContent = lang === 'es' ? '📤 Enviar consulta' : '📤 Send question';
+    // Navbar subtitle
+    const navSub = document.querySelector('.navbar-subtitle');
+    if (navSub) navSub.textContent = t['navbar-subtitle'];
+    // Hero
+    const heroP = document.querySelector('.hero p');
+    if (heroP) heroP.textContent = t['hero-p'];
+    // Consultas button
+    const btnConsultas = document.querySelector('.btn-consultas-wrap .btn-nav');
+    if (btnConsultas) btnConsultas.innerHTML = t['consultas-btn'];
+    // Tooltip
+    const tooltip = document.querySelector('.btn-consultas-wrap .tooltip');
+    if (tooltip) tooltip.textContent = t['tooltip'];
+    // Sección consultas
+    const ct = document.getElementById('consultas-title');
+    if (ct) ct.textContent = t['consultas-title'];
+    const cd = document.getElementById('consultas-desc');
+    if (cd) cd.textContent = t['consultas-desc'];
+    const ln = document.getElementById('label-nombre');
+    if (ln) ln.textContent = t['label-nombre'];
+    const le = document.getElementById('label-email');
+    if (le) le.textContent = t['label-email'];
+    const ld = document.getElementById('label-duda');
+    if (ld) ld.textContent = t['label-duda'];
+    const lf = document.getElementById('label-foto');
+    if (lf) lf.textContent = t['label-foto'];
+    const inp = document.getElementById('consulta-nombre');
+    if (inp) inp.placeholder = t['ph-nombre'];
+    const inpe = document.getElementById('consulta-email');
+    if (inpe) inpe.placeholder = t['ph-email'];
+    const inpd = document.getElementById('consulta-comentario');
+    if (inpd) inpd.placeholder = t['ph-duda'];
+    const btnEnv = document.getElementById('btn-enviar-consulta');
+    if (btnEnv && !btnEnv.disabled) btnEnv.textContent = t['btn-enviar'];
     // Re-renderizar para aplicar traducciones de vistas/likes
     renderPublic();
   }
+
+  // Limpiar caché viejo si tiene datos corruptos
+  try {
+    const c = JSON.parse(localStorage.getItem('videos_cache'));
+    if (c && c.data && (!Array.isArray(c.data) || (c.data.length > 0 && typeof c.data[0] !== 'object'))) {
+      localStorage.removeItem('videos_cache');
+    }
+  } catch(e) { localStorage.removeItem('videos_cache'); }
 
   // Arrancar
   showView('public');
