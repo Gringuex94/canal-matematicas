@@ -411,7 +411,7 @@
 <div id="view-public" class="">
   <div class="hero">
     <div class="hero-math">∑∫π</div>
-    <h1>📐 Matemáticas con Javier</h1>
+    <h1 id="hero-title">📐 Matemáticas con Javier</h1>
     <p>Secundario &amp; Universitario · Aprendé a tu ritmo</p>
   </div>
   <div class="main">
@@ -1103,6 +1103,9 @@ document.addEventListener('keydown', function(e) {
     const fileInput2 = document.getElementById('consulta-imagen');
     if (fileDisplay && (!fileInput2 || !fileInput2.files[0])) fileDisplay.textContent = t['no-file'];
     // Hero
+    // Hero
+    const heroTitle = document.getElementById('hero-title');
+    if (heroTitle) heroTitle.innerHTML = '📐 ' + t['navbar-title'];
     const heroP = document.querySelector('.hero p');
     if (heroP) heroP.textContent = t['hero-p'];
     // Consultas button
