@@ -1,19 +1,13 @@
-export default async function handler(req, res) {
-  // Solo POST
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
-
-  // Rate limiting básico por IP
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
   try {
     const { messages } = req.body;
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: 'Invalid request' });
     }
-
-    // Limitar tamaño del historial
     if (messages.length > 20) {
       return res.status(400).json({ error: 'Too many messages' });
     }
@@ -46,4 +40,4 @@ export default async function handler(req, res) {
     console.error('Chat error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
-}
+};
