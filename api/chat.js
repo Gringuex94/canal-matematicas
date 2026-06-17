@@ -12,28 +12,35 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'Too many messages' });
     }
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: messages })
-      }
-    );
+    // Convertir formato de Gemini ({role, parts:[{text}]}) a Claude ({role, content})
+    const claudeMessages = messages.map(m => ({
+      role: m.role === 'model' ? 'assistant' : 'user',
+      content: m.parts ? m.parts[0].text : m.content
+    }));
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5',
+        max_tokens: 1024,
+        system: 'Eres un asistente de matemáticas útil y claro. Ayudás a estudiantes a entender conceptos matemáticos de forma sencilla.',
+        messages: claudeMessages
+      })
+    });
 
     if (!response.ok) {
       const err = await response.text();
-      console.error('Gemini error:', err);
+      console.error('Claude error:', err);
       return res.status(500).json({ error: 'AI service error' });
     }
 
     const data = await response.json();
-
-    if (!data.candidates || !data.candidates[0]) {
-      return res.status(500).json({ error: 'No response from AI' });
-    }
-
-    const reply = data.candidates[0].content.parts[0].text;
+    const reply = data.content[0].text;
     return res.status(200).json({ reply });
 
   } catch (error) {
